@@ -9,4 +9,5 @@ public interface ProductDao {
     List<Product> findProducts(String query, SortField sortFiels, SortType sortType);
     void save(Product product);
     void delete(Long id);
+    void clearAll();
 }

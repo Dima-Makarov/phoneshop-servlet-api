@@ -31,11 +31,11 @@ public class ArrayListProductDaoTest
         assertTrue(productDao.getProduct(p.getId()).isPresent());
         productDao.delete(p.getId());
         assertFalse(productDao.getProduct(p.getId()).isPresent());
+        productDao.clearAll();
     }
 
     @Test
     public void testFindProducts() {
-        assertFalse(productDao.findProducts(null, null, null).isEmpty());
         Currency usd = Currency.getInstance("USD");
         Product p = new Product("sgs", "Xiaomi", new BigDecimal(100), usd, 100, "https://just/a/shortened/link.jpg");
         productDao.save(p);
@@ -46,6 +46,7 @@ public class ArrayListProductDaoTest
         p = new Product("sgs", "Xiaomi", null, usd, 10, "https://just/a/shortened/link.jpg");
         productDao.save(p);
         assertFalse(productDao.findProducts(null, null, null).contains(p));
+        productDao.clearAll();
     }
 
     @Test
@@ -58,6 +59,7 @@ public class ArrayListProductDaoTest
         assertEquals(productDao.getProduct(p.getId()).get(), p);
         productDao.save(p);
         assertEquals(p.getId(), id);
+        productDao.clearAll();
     }
     @Test
     public void testGetProduct() {
@@ -65,10 +67,10 @@ public class ArrayListProductDaoTest
         Product p = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://just/a/shortened/link.jpg");
         productDao.save(p);
         assertEquals(productDao.getProduct(p.getId()).get(), p);
+        productDao.clearAll();
     }
     @Test
     public void testSearchSimple() {
-        ClearProductDao();
         Currency usd = Currency.getInstance("USD");
         Product p1 = new Product("sgs", "a", new BigDecimal(100), usd, 100, "somelink");
         Product p2 = new Product("sgs", "b", new BigDecimal(100), usd, 100, "somelink");
@@ -79,10 +81,10 @@ public class ArrayListProductDaoTest
         assertTrue(productDao.findProducts("a",null,null).contains(p1));
         assertFalse(productDao.findProducts("a", null, null).contains(p2));
         assertFalse(productDao.findProducts("a", null, null).contains(p3));
+        productDao.clearAll();
     }
     @Test
     public void testSearchAdvanced() {
-        ClearProductDao();
         Currency usd = Currency.getInstance("USD");
         Product p1 = new Product("sgs", "a", new BigDecimal(100), usd, 100, "somelink");
         Product p2 = new Product("sgs", "a a", new BigDecimal(100), usd, 100, "somelink");
@@ -99,11 +101,11 @@ public class ArrayListProductDaoTest
         assertFalse(productDao.findProducts("a", null, null).contains(p3));
         assertFalse(productDao.findProducts("a", null, null).contains(p4));
         assertFalse(productDao.findProducts(null, null, null).isEmpty());
+        productDao.clearAll();
     }
 
     @Test
     public void testSorting() {
-        ClearProductDao();
         Currency usd = Currency.getInstance("USD");
         Product p4 = new Product("sgs", "c", new BigDecimal(4), usd, 100, "somelink");
         Product p1 = new Product("sgs", "a", new BigDecimal(1), usd, 100, "somelink");
@@ -137,15 +139,6 @@ public class ArrayListProductDaoTest
         assertEquals(searchResult.get(1), p3);
         assertEquals(searchResult.get(2), p2);
         assertEquals(searchResult.get(3), p1);
-    }
-
-    private void ClearProductDao() {
-        List<Long> ids = new ArrayList<>();
-        for(Product i : productDao.findProducts(null,null,null)) {
-            ids.add(i.getId());
-        }
-        for(Long id : ids) {
-            productDao.delete(id);
-        }
+        productDao.clearAll();
     }
 }

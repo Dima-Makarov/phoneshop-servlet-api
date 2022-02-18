@@ -63,6 +63,7 @@ public class CartPageServletTest {
 
     @Test
     public void testDoPost() throws ServletException, IOException {
+
         when(httpSession.getAttribute(HttpSessionCartService.class.getName() + ".lock")).thenReturn(lock);
         String[] quantities = new String[1];
         quantities[0] = "2";
@@ -80,8 +81,10 @@ public class CartPageServletTest {
         Currency usd = Currency.getInstance("USD");
         Product p = new Product("a", "a", new BigDecimal(1), usd, 100, "somelink");
         ProductDao productDao = ArrayListProductDao.getInstance();
+        productDao.clearAll();
         productDao.save(p);
         servlet.doPost(request,response);
         assertTrue(cart.getItems().containsKey(p));
+        productDao.clearAll();
     }
 }

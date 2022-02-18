@@ -77,5 +77,6 @@ public class ProductDetailsPageServletTest {
         productDao.save(p);
         servlet.doPost(request,response);
         assertTrue(cart.getItems().containsKey(p));
+        productDao.clearAll();
     }
 }

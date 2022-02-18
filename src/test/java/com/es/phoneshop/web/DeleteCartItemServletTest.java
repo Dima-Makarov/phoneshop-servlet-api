@@ -66,5 +66,6 @@ public class DeleteCartItemServletTest {
         productDao.save(p);
         servlet.doPost(request,response);
         assertFalse(cart.getItems().containsKey(p));
+        productDao.clearAll();
     }
 }

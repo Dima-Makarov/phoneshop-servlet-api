@@ -85,6 +85,12 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
+    public void clearAll() {
+        products.clear();
+        maxId = 0;
+    }
+
+    @Override
     public void delete(Long id) {
         lock.writeLock().lock();
         try {

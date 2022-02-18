@@ -37,6 +37,8 @@ public class DemoDataServletContextListenerTest {
         servlet.contextInitialized(servletContextEvent);
         ProductDao pd = ArrayListProductDao.getInstance();
         assertFalse(pd.findProducts(null, null, null).isEmpty());
+        pd.clearAll();
+
     }
 
     @Test
@@ -46,5 +48,6 @@ public class DemoDataServletContextListenerTest {
         servlet.contextInitialized(servletContextEvent);
         ProductDao pd = ArrayListProductDao.getInstance();
         assertTrue(pd.findProducts(null, null, null).isEmpty());
+        pd.clearAll();
     }
 }

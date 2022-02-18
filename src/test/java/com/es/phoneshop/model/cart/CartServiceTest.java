@@ -52,6 +52,7 @@ public class CartServiceTest {
         assertNotNull(cartService);
         cartService.add(cart, 0L, 1, httpSession);
         assertEquals(cart.get(p), 1);
+        productDao.clearAll();
     }
 
     @Test(expected = OutOfStockException.class)
@@ -66,5 +67,6 @@ public class CartServiceTest {
         assertNotNull(cartService);
         cartService.add(cart, 0L, 1, httpSession);
         cartService.add(cart, 0L, 100, httpSession);
+        productDao.clearAll();
     }
 }

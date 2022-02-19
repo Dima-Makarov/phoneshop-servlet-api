@@ -10,11 +10,11 @@ import java.util.Map;
 
 public class Cart implements Serializable {
     static final long serialVersionUID = 1L;
-    private final Map<Product, Integer> items;
+    private Map<Product, Integer> items;
 
     private int totalQuantity;
-    private BigDecimal totalCost;
 
+    private BigDecimal totalCost;
     public int getTotalQuantity() {
         return totalQuantity;
     }
@@ -42,6 +42,10 @@ public class Cart implements Serializable {
     int get(Product p) {
         Integer amount = items.get(p);
         return amount == null ? 0 : amount;
+    }
+
+    public void setItems(Map<Product, Integer> items) {
+        this.items = items;
     }
 
     @Override

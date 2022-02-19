@@ -1,5 +1,7 @@
 package com.es.phoneshop.model.order;
 
-public enum PaymentMethod {
+import java.io.Serializable;
+
+public enum PaymentMethod implements Serializable {
     CACHE, CREDIT_CARD;
 }

@@ -1,13 +1,12 @@
 package com.es.phoneshop.model.order;
 
-import com.es.phoneshop.model.product.*;
-
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
-public class ArrayListOrderDao implements OrderDao {
+public class ArrayListOrderDao implements OrderDao, Serializable {
+    static final long serialVersionUID = 2L;
     private static OrderDao instance;
 
     public static synchronized OrderDao getInstance() {

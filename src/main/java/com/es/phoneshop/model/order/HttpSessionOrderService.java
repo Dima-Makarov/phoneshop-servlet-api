@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class HttpSessionOrderService implements OrderService {
     private static final String LOCK_SESSION_ATTRIBUTE = HttpSessionOrderService.class.getName() + ".lock";
     private static HttpSessionOrderService instance;
-    private OrderDao orderDao = ArrayListOrderDao.getInstance();
+    private final OrderDao orderDao = ArrayListOrderDao.getInstance();
 
     public static synchronized HttpSessionOrderService getInstance() {
         if (instance == null) {
@@ -29,24 +29,40 @@ public class HttpSessionOrderService implements OrderService {
     }
 
     @Override
-    public Order getOrder(Cart cart) {
-        Order order = new Order();
-        order.setItems(new LinkedHashMap<>(cart.getItems()));
-        order.setSubTotal(cart.getTotalCost());
-        order.setDeliveryCost(calculateDeliveryCost());
-        order.setTotalCost(order.getDeliveryCost().add(order.getSubTotal()));
-        return order;
+    public Order getOrder(Cart cart, HttpServletRequest request) {
+        Lock lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
+        if (lock == null) {
+            synchronized (request.getSession()) {
+                lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
+                if (lock == null) {
+                    lock = new ReentrantLock();
+                    request.getSession().setAttribute(LOCK_SESSION_ATTRIBUTE, lock);
+                }
+            }
+        }
+        lock.lock();
+        try {
+            Order order = new Order();
+            order.setItems(new LinkedHashMap<>(cart.getItems()));
+            order.setSubTotal(cart.getTotalCost());
+            order.setDeliveryCost(calculateDeliveryCost());
+            order.setTotalCost(order.getDeliveryCost().add(order.getSubTotal()));
+            return order;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
-    public List<PaymentMethod> getPaymentMethods() {
-        return Arrays.asList(PaymentMethod.values());
-    }
-
-    @Override
-    public void placeOrder(Order order) {
-        order.setSecureId(UUID.randomUUID().toString());
-        orderDao.save(order);
+    public void placeOrder(Order order, HttpServletRequest request) {
+        Lock lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
+        lock.lock();
+        try {
+            order.setSecureId(UUID.randomUUID().toString());
+            orderDao.save(order);
+        } finally {
+            lock.unlock();
+        }
     }
 
     private BigDecimal calculateDeliveryCost() {

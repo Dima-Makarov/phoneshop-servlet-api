@@ -1,8 +1,5 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.cart.Cart;
-import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.cart.HttpSessionCartService;
 import com.es.phoneshop.model.order.*;
 
 import javax.servlet.ServletConfig;
@@ -11,10 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
 
 
 public class OverviewPageServlet extends HttpServlet {
@@ -31,9 +24,15 @@ public class OverviewPageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String secureOrderId = request.getPathInfo().substring(1);
-        Order order = orderDao.getOrderBySecure(secureOrderId).get();
-        request.setAttribute("order", order);
-        request.getRequestDispatcher("/WEB-INF/pages/overview.jsp").forward(request, response);
+        try {
+            String secureOrderId = request.getPathInfo().substring(1);
+            Order order = orderDao.getOrderBySecure(secureOrderId).get();
+            request.setAttribute("order", order);
+            request.getRequestDispatcher("/WEB-INF/pages/overview.jsp").forward(request, response);
+        } catch (Exception e) {
+            request.setAttribute("incorrectId", "null");
+            response.setStatus(404);
+            request.getRequestDispatcher("/WEB-INF/pages/PageNotFound.jsp").forward(request, response);
+        }
     }
 }

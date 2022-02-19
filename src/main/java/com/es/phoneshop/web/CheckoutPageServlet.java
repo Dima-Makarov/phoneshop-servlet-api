@@ -32,13 +32,19 @@ public class CheckoutPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Cart cart = cartService.getCart(request);
-        Order order = orderService.getOrder(cart);
+        Order order = orderService.getOrder(cart, request);
         Map<String, String> errors = new HashMap<>();
         setParameter(request, "firstName", errors, order::setFirstName);
         setParameter(request, "lastName", errors, order::setLastName);
         setParameter(request, "phoneNumber", errors, order::setPhoneNumber);
         setParameter(request, "deliveryAddress", errors, order::setDeliveryAddress);
-//        setParameter(request, "deliveryDate", errors, order::setFirstName);
+        setParameter(request, "deliveryDate", errors, s -> {
+            if (s == null || s.isEmpty()) {
+                errors.put("deliveryDate", "delivery date is required");
+            } else {
+                order.setDeliveryDate(LocalDate.parse(s));
+            }
+        });
         setParameter(request, "paymentMethod", errors, s -> {
             try {
                 order.setPaymentMethod(PaymentMethod.valueOf(s));
@@ -46,8 +52,11 @@ public class CheckoutPageServlet extends HttpServlet {
                 errors.put("paymentMethod", "incorrect payment method");
             }
         });
+        if(order.getItems().isEmpty()) {
+            errors.put("order", "Do not try to buy zero products");
+        }
         if (errors.isEmpty()) {
-            orderService.placeOrder(order);
+            orderService.placeOrder(order, request);
             cartService.ClearCart(cart, request.getSession());
             response.sendRedirect(request.getContextPath() + "/order/overview/" + order.getSecureId());
         } else {
@@ -65,9 +74,9 @@ public class CheckoutPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getAttribute("order") == null) {
-            request.setAttribute("order", orderService.getOrder(cartService.getCart(request)));
+            request.setAttribute("order", orderService.getOrder(cartService.getCart(request), request));
         }
-        request.setAttribute("paymentMethod", orderService.getPaymentMethods());
+        request.setAttribute("paymentMethod", OrderService.getPaymentMethods());
         request.getRequestDispatcher("/WEB-INF/pages/checkout.jsp").forward(request, response);
     }
 

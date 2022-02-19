@@ -9,12 +9,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Cart implements Serializable {
-    static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 2L;
     private Map<Product, Integer> items;
 
-    private int totalQuantity;
+    private int totalQuantity = 0;
 
     private BigDecimal totalCost;
+
     public int getTotalQuantity() {
         return totalQuantity;
     }
@@ -33,6 +34,7 @@ public class Cart implements Serializable {
 
     public Cart() {
         this.items = Collections.synchronizedMap(new LinkedHashMap<>());
+        totalCost = new BigDecimal(0);
     }
 
     public Map<Product, Integer> getItems() {

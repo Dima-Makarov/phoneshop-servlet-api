@@ -81,6 +81,9 @@
             </td>
         </tr>
     </table>
+    <div class="error">
+        ${errors['order']}
+    </div>
     <h2> Details </h2>
     <form method="post">
         <table style="border:1px solid black;margin-left:auto;margin-right:auto;">

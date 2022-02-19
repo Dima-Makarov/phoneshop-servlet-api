@@ -7,15 +7,28 @@ import java.time.LocalDate;
 import java.util.Currency;
 
 public class Order extends Cart {
-    static final long serialVersionUID = 1L;
     private Long id;
     private String SecureId;
     private BigDecimal subTotal;
-
     private BigDecimal deliveryCost;
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    private String deliveryAddress;
+    private LocalDate deliveryDate;
+    private PaymentMethod paymentMethod;
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
 
     public Long getId() {
         return id;
@@ -23,21 +36,6 @@ public class Order extends Cart {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    private String deliveryAddress;
-    private LocalDate deliveryDate;
-
-    public String getFirstName() {
-        return firstName;
     }
 
     public void setFirstName(String firstName) {
@@ -75,8 +73,6 @@ public class Order extends Cart {
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
-
-    private PaymentMethod paymentMethod;
 
     private final Currency currency = Currency.getInstance("USD");
 

@@ -41,9 +41,9 @@
                         </a>
                     </td>
                     <td>
-                        <c:set var="hasError" value="${errors[entry.key.id]}"/>
-                        <input name="quantity" value="${not empty hasError ? paramValues['quantity'][status.index] : entry.value}" class="quantity">
-                        <c:if test="${not empty hasError}">
+                        <c:set var="error" value="${errors[entry.key.id]}"/>
+                        <input name="quantity" value="${not empty error ? paramValues['quantity'][status.index] : entry.value}" class="quantity">
+                        <c:if test="${not empty error}">
                             <div class="error">
                                     ${errors[entry.key.id]}
                             </div>
@@ -86,6 +86,9 @@
         <p>
             <button>Update</button>
         </p>
+    </form>
+    <form action="${pageContext.servletContext.contextPath}/checkout" method="get">
+        <button> Checkout</button>
     </form>
     <form id="deleteCartItem" method="post"></form>
 </tags:master>

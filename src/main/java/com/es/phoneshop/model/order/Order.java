@@ -9,13 +9,14 @@ import java.util.Currency;
 public class Order extends Cart {
     static final long serialVersionUID = 1L;
     private Long id;
-
+    private String SecureId;
     private BigDecimal subTotal;
 
     private BigDecimal deliveryCost;
     private String firstName;
     private String lastName;
     private String phoneNumber;
+
     public Long getId() {
         return id;
     }
@@ -77,7 +78,7 @@ public class Order extends Cart {
 
     private PaymentMethod paymentMethod;
 
-    private Currency currency;
+    private final Currency currency = Currency.getInstance("USD");
 
     public BigDecimal getSubTotal() {
         return subTotal;
@@ -89,6 +90,14 @@ public class Order extends Cart {
 
     public BigDecimal getDeliveryCost() {
         return deliveryCost;
+    }
+
+    public String getSecureId() {
+        return SecureId;
+    }
+
+    public void setSecureId(String secureId) {
+        SecureId = secureId;
     }
 
     public void setDeliveryCost(BigDecimal deliveryCost) {

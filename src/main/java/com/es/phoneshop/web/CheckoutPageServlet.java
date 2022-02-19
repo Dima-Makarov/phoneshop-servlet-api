@@ -48,7 +48,8 @@ public class CheckoutPageServlet extends HttpServlet {
         });
         if (errors.isEmpty()) {
             orderService.placeOrder(order);
-            response.sendRedirect(request.getContextPath() + "/overview");
+            cartService.ClearCart(cart, request.getSession());
+            response.sendRedirect(request.getContextPath() + "/order/overview/" + order.getSecureId());
         } else {
             request.setAttribute("errors", errors);
             request.setAttribute("order", order);

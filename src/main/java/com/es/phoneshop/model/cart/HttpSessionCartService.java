@@ -54,6 +54,18 @@ public class HttpSessionCartService implements CartService {
     }
 
     @Override
+    public void ClearCart(Cart cart, HttpSession session) {
+        Lock lock = getLock(session);
+        lock.lock();
+        try {
+            cart.getItems().clear();
+            recalculateCart(cart);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
     public void update(Cart cart, Long productId, int quantity, HttpSession session) throws OutOfStockException {
         Lock lock = getLock(session);
         lock.lock();

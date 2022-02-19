@@ -9,5 +9,6 @@ import java.util.Optional;
 
 public interface OrderDao {
     Optional<Order> getOrder(Long id);
+    Optional<Order> getOrderBySecure(String secureId);
     void save(Order order);
 }

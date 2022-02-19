@@ -43,6 +43,22 @@ public class ArrayListOrderDao implements OrderDao {
     }
 
     @Override
+    public Optional<Order> getOrderBySecure(String secureId) {
+
+        if (secureId == null) {
+            return Optional.empty();
+        }
+        lock.readLock().lock();
+        try {
+            return orders.stream()
+                    .filter(order -> secureId.equals(order.getSecureId()))
+                    .findAny();
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
     public void save(Order order) {
         if (order == null) {
             return;

@@ -9,10 +9,7 @@ import com.es.phoneshop.model.product.ProductDao;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -48,6 +45,7 @@ public class HttpSessionOrderService implements OrderService {
 
     @Override
     public void placeOrder(Order order) {
+        order.setSecureId(UUID.randomUUID().toString());
         orderDao.save(order);
     }
 

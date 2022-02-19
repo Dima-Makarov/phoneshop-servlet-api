@@ -42,6 +42,11 @@ public class ArrayListOrderDao implements OrderDao, Serializable {
     }
 
     @Override
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    @Override
     public Optional<Order> getOrderBySecure(String secureId) {
 
         if (secureId == null) {

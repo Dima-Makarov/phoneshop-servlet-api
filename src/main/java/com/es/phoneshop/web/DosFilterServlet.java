@@ -4,11 +4,10 @@ import com.es.phoneshop.security.DefaultDosProtectionService;
 import com.es.phoneshop.security.DosProtectionService;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class DosFilter implements Filter {
+public class DosFilterServlet implements Filter {
     private DosProtectionService dosProtectionService;
 
     @Override

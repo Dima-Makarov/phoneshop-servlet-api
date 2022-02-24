@@ -16,7 +16,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class CartPageServlet extends HttpServlet {
     private CartService cartService;
 

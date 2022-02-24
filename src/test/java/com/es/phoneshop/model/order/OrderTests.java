@@ -53,7 +53,7 @@ public class OrderTests {
         productDao.save(new Product("sgs", "Xiaomi", new BigDecimal(100), Currency.getInstance("USD"), 100, "https://just/a/shortened/link.jpg"));
         cartService.add(cart,0L,1,httpSession);
         Order order = orderService.getOrder(cart, request);
-        orderService.placeOrder(order,request);
+        orderService.placeOrder(order, cart, request);
         assertFalse(orderDao.getOrders().isEmpty());
         productDao.clearAll();
     }

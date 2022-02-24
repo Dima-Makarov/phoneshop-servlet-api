@@ -3,7 +3,9 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.HttpSessionCartService;
 import com.es.phoneshop.model.cart.OutOfStockException;
-import com.es.phoneshop.model.product.*;
+import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.recentView.HttpSessionRecentViewService;
 import com.es.phoneshop.model.recentView.RecentView;
 import com.es.phoneshop.model.recentView.RecentViewService;
@@ -32,7 +34,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Long productId = null;
         try {
             String quantityString = request.getParameter("quantity");

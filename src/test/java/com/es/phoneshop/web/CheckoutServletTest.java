@@ -2,6 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.HttpSessionCartService;
+import com.es.phoneshop.model.order.EmptyCartException;
 import com.es.phoneshop.model.order.HttpSessionOrderService;
 import com.es.phoneshop.model.order.Order;
 import org.junit.Before;
@@ -52,7 +53,7 @@ public class CheckoutServletTest {
         servlet.doGet(request,response);
         verify(requestDispatcher).forward(request, response);
     }
-    @Test
+    @Test(expected = EmptyCartException.class)
     public void testdoPost() throws ServletException, IOException {
         Cart cart = new Cart();
         when(httpSession.getAttribute(HttpSessionCartService.class.getName() + ".cart")).thenReturn(cart);
@@ -61,6 +62,5 @@ public class CheckoutServletTest {
         when(httpSession.getAttribute(HttpSessionCartService.class.getName() + ".lock")).thenReturn(lock);
         when(httpSession.getAttribute(HttpSessionOrderService.class.getName() + ".lock")).thenReturn(lock);
         servlet.doPost(request,response);
-        verify(requestDispatcher).forward(request, response);
     }
 }

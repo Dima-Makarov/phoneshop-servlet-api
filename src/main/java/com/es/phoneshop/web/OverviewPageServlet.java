@@ -1,6 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.order.*;
+import com.es.phoneshop.model.order.ArrayListOrderDao;
+import com.es.phoneshop.model.order.Order;
+import com.es.phoneshop.model.order.OrderDao;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -8,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 
 public class OverviewPageServlet extends HttpServlet {
@@ -26,13 +29,21 @@ public class OverviewPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String secureOrderId = request.getPathInfo().substring(1);
-            Order order = orderDao.getOrderBySecure(secureOrderId).get();
-            request.setAttribute("order", order);
-            request.getRequestDispatcher("/WEB-INF/pages/overview.jsp").forward(request, response);
+            Optional<Order> orderOpt = orderDao.getOrderBySecure(secureOrderId);
+            if(orderOpt.isPresent()) {
+                request.setAttribute("order", orderOpt.get());
+                request.getRequestDispatcher("/WEB-INF/pages/overview.jsp").forward(request, response);
+            } else {
+                handleError(request, response);
+            }
         } catch (Exception e) {
-            request.setAttribute("incorrectId", "null");
-            response.setStatus(404);
-            request.getRequestDispatcher("/WEB-INF/pages/PageNotFound.jsp").forward(request, response);
+            handleError(request, response);
         }
+    }
+
+    private void handleError(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("incorrectId", "null");
+        response.setStatus(404);
+        request.getRequestDispatcher("/WEB-INF/pages/PageNotFound.jsp").forward(request, response);
     }
 }

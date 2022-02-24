@@ -54,7 +54,7 @@ public class HttpSessionCartService implements CartService {
     }
 
     @Override
-    public void ClearCart(Cart cart, HttpSession session) {
+    public void clearCart(Cart cart, HttpSession session) {
         Lock lock = getLock(session);
         lock.lock();
         try {

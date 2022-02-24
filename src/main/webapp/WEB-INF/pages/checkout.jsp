@@ -91,7 +91,18 @@
             <tags:orderFormRow name="firstName" label="First Name" order="${order}" errors="${errors}"/>
             <tags:orderFormRow name="lastName" label="Last Name" order="${order}" errors="${errors}"/>
             <tags:orderFormRow name="phoneNumber" label="Phone Number" order="${order}" errors="${errors}"/>
-            <tags:orderFormRow name="deliveryDate" label="Delivery Date" order="${order}" errors="${errors}"/>
+            <tr>
+                <td>Delivery Date<span style="color:red">*</span></td>
+                <td>
+                    <c:set var="error" value="${errors['deliveryDate']}"/>
+                    <input type="date" name="deliveryDate" value="${not empty error ? param['deliveryDate'] : order['deliveryDate']}"/>
+                    <c:if test="${not empty error}">
+                        <div class="error">
+                                ${error}
+                        </div>
+                    </c:if>
+                </td>
+            </tr>
             <tags:orderFormRow name="deliveryAddress" label="Delivery Address" order="${order}" errors="${errors}"/>
 
             <tr>

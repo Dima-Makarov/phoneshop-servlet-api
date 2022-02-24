@@ -1,12 +1,12 @@
 package com.es.phoneshop.model.order;
 
-import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class ArrayListOrderDao implements OrderDao, Serializable {
-    static final long serialVersionUID = 2L;
+public class ArrayListOrderDao implements OrderDao{
     private static OrderDao instance;
 
     public static synchronized OrderDao getInstance() {
@@ -20,25 +20,10 @@ public class ArrayListOrderDao implements OrderDao, Serializable {
 
     private long maxId = 0;
 
-    ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     private ArrayListOrderDao() {
         this.orders = new ArrayList<>();
-    }
-
-    @Override
-    public Optional<Order> getOrder(Long id) throws NoSuchElementException {
-        if (id == null) {
-            return Optional.empty();
-        }
-        lock.readLock().lock();
-        try {
-            return orders.stream()
-                    .filter(order -> id.equals(order.getId()))
-                    .findAny();
-        } finally {
-            lock.readLock().unlock();
-        }
     }
 
     @Override
@@ -70,9 +55,9 @@ public class ArrayListOrderDao implements OrderDao, Serializable {
         lock.writeLock().lock();
         try {
             if (order.getId() != null) {
-                orders.forEach(product1 -> {
-                    if (product1.getId().equals(order.getId())) {
-                        orders.set(orders.indexOf(product1), order);
+                orders.forEach(order1 -> {
+                    if (order1.getId().equals(order.getId())) {
+                        orders.set(orders.indexOf(order1), order);
                     }
                 });
             } else {

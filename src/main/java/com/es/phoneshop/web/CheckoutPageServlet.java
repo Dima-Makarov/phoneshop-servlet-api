@@ -3,10 +3,7 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.HttpSessionCartService;
-import com.es.phoneshop.model.order.HttpSessionOrderService;
-import com.es.phoneshop.model.order.Order;
-import com.es.phoneshop.model.order.OrderService;
-import com.es.phoneshop.model.order.PaymentMethod;
+import com.es.phoneshop.model.order.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -42,7 +40,11 @@ public class CheckoutPageServlet extends HttpServlet {
             if (s == null || s.isEmpty()) {
                 errors.put("deliveryDate", "delivery date is required");
             } else {
-                order.setDeliveryDate(LocalDate.parse(s));
+                try {
+                    order.setDeliveryDate(LocalDate.parse(s));
+                } catch (DateTimeParseException e) {
+                    errors.put("deliveryDate", "delivery date is wrong");
+                }
             }
         });
         setParameter(request, "paymentMethod", errors, s -> {
@@ -52,12 +54,16 @@ public class CheckoutPageServlet extends HttpServlet {
                 errors.put("paymentMethod", "incorrect payment method");
             }
         });
-        if(order.getItems().isEmpty()) {
-            errors.put("order", "Do not try to buy zero products");
-        }
         if (errors.isEmpty()) {
-            orderService.placeOrder(order, request);
-            cartService.ClearCart(cart, request.getSession());
+            try {
+                orderService.placeOrder(order, cart, request);
+            } catch (EmptyCartException e) {
+                errors.put("order", "Empty cart");
+                request.setAttribute("errors", errors);
+                request.setAttribute("order", order);
+                doGet(request, response);
+                return;
+            }
             response.sendRedirect(request.getContextPath() + "/order/overview/" + order.getSecureId());
         } else {
             request.setAttribute("errors", errors);

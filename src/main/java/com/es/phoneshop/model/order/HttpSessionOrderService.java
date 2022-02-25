@@ -39,9 +39,6 @@ public class HttpSessionOrderService implements OrderService {
         }
         lock.lock();
         try {
-            if(cart.getItems().isEmpty()) {
-                throw new EmptyCartException();
-            }
             Order order = new Order();
             order.setItems(new LinkedHashMap<>(cart.getItems()));
             order.setSubTotal(cart.getTotalCost());
@@ -58,6 +55,9 @@ public class HttpSessionOrderService implements OrderService {
         Lock lock = (Lock) request.getSession().getAttribute(LOCK_SESSION_ATTRIBUTE);
         lock.lock();
         try {
+            if(cart.getItems().isEmpty()) {
+                throw new EmptyCartException();
+            }
             order.setSecureId(UUID.randomUUID().toString());
             order.setItems(new LinkedHashMap<>(cart.getItems()));
             order.setSubTotal(cart.getTotalCost());

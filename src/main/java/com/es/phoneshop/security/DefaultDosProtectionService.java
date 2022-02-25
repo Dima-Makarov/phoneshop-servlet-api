@@ -2,6 +2,7 @@ package com.es.phoneshop.security;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -55,22 +56,26 @@ public class DefaultDosProtectionService implements DosProtectionService {
 
     @Override
     public boolean isAllowed(String ip) {
-        if (!requestMap.containsKey(ip)) {
-            requestMap.put(ip, new RequestData(1, System.currentTimeMillis()));
+        final boolean[] isAllowed = {false};
+        requestMap.computeIfAbsent(ip, ip_ -> {
+            isAllowed[0] = true;
+            return new RequestData(1, System.currentTimeMillis());
+        });
+        if(isAllowed[0]) {
             return true;
-        } else {
-            RequestData requestData = requestMap.get(ip);
-            requestData.getLock().lock();
-            try {
-                if (System.currentTimeMillis() - requestData.getLastRequestTime() > 60 * 1000) {
-                    requestData.setCount(0);
-                }
-                requestData.setLastRequestTime(System.currentTimeMillis());
-                requestData.setCount(requestData.getCount() + 1);
-                return requestData.getCount() < THRESHOLD;
-            } finally {
-                requestData.getLock().unlock();
-            }
         }
+        RequestData requestData = requestMap.get(ip);
+        requestData.getLock().lock();
+        try {
+            if (System.currentTimeMillis() - requestData.getLastRequestTime() > 60 * 1000) {
+                requestData.setLastRequestTime(System.currentTimeMillis());
+                requestData.setCount(0);
+            }
+            requestData.setCount(requestData.getCount() + 1);
+            isAllowed[0] = requestData.getCount() < THRESHOLD;
+        } finally {
+            requestData.getLock().unlock();
+        }
+        return isAllowed[0];
     }
 }

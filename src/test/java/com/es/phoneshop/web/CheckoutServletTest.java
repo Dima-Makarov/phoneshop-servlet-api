@@ -53,7 +53,7 @@ public class CheckoutServletTest {
         servlet.doGet(request,response);
         verify(requestDispatcher).forward(request, response);
     }
-    @Test(expected = EmptyCartException.class)
+    @Test
     public void testdoPost() throws ServletException, IOException {
         Cart cart = new Cart();
         when(httpSession.getAttribute(HttpSessionCartService.class.getName() + ".cart")).thenReturn(cart);

@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -55,6 +56,19 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(new ProductStockPricePredicate().and(new ProductSearchPredicate(queryWordsList)))
                     .sorted(new ProductSortFieldComparator(sortType, sortField)
                             .thenComparing(new ProductSearchComparator(queryWordsList)))
+                    .collect(Collectors.toList());
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public List<Product> findProductAdvanced(String productCode, BigDecimal minPrice, BigDecimal maxPrice, Integer minStock) {
+        lock.readLock().lock();
+        try{
+            return products
+                    .stream()
+                    .filter(new ProductCodePredicate(productCode).and(new PriceStockPredicate(minPrice, maxPrice, minStock)))
                     .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();

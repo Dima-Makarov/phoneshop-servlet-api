@@ -12,6 +12,11 @@
     <div class="success">
             ${param.message}
     </div>
+    <div>
+        <a href="${pageContext.servletContext.contextPath}/advancedSearch?productCode=&minPrice=&maxPrice=&minStock=">
+                Advanced Search Page
+        </a>
+    </div>
     <form>
         <label>
             <input name="query" value="${param.query}">
